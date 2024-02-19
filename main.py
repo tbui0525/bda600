@@ -3,6 +3,9 @@ import speech_recognition
 import pyttsx3
 import pyaudio
 import cv2
+from openai import OpenAI
+
+client = OpenAI(api_key="API-KEY")
 
 
 def main():
@@ -20,7 +23,19 @@ def main():
                     if text == "exit":
                         break
                 elif words[0] == "hey" and words[1] == "Paul":
-                    print(text[9:])
+                    prompt = text[9:]
+                    print(prompt)
+                    completion = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {"role": "system", "content": "You are an assistant."},
+                            {"role": "user", "content": prompt}
+                        ]
+                    )
+
+                    print(completion.choices[0].message.content)
+
+
 
 
         except speech_recognition.UnknownValueError:

@@ -3,3 +3,4 @@ speechrecognition
 pyaudio
 pyttsx3
 opencv-python
+openai
