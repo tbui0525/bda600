@@ -5,7 +5,7 @@ import pyaudio
 import cv2
 from openai import OpenAI
 
-client = OpenAI(api_key="API-KEY")
+client = OpenAI(api_key="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")
 
 
 def main():
