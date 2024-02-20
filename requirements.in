@@ -4,3 +4,4 @@ pyaudio
 pyttsx3
 opencv-python
 openai
+gtts
