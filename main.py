@@ -1,4 +1,5 @@
 import os
+import json
 import sys
 
 import speech_recognition
@@ -11,13 +12,13 @@ with open('OPEN_AI_API_KEY.txt', 'r') as f:
 f.close()
 # SETTING UP CLIENT
 client = OpenAI(api_key=OPEN_AI_API_KEY)
-# ESTABLISHING THAT PAUL HAS BEGUN LISTENING
-os.system("sound.ogg")
-# INITIALIZE MESSAGE TO ESTABLISH PAUL'S CHARACTER
-
-
-
-def main():
+# RETRIEVING MESSAGE HISTORY TO MAKE PAUL CARRY CONTEXT AFTER BEING TURNED ON AND OFF
+with open('history.json', 'r') as g:  # JSON
+    history = json.load(g)
+    g.close()
+print(len(history))
+# INITIALIZE MESSAGES TO ESTABLISH PAUL'S CHARACTER
+if len(history) == 0:
     messages = [{
         "role": "system",
         "content": """
@@ -27,26 +28,40 @@ def main():
                 respond accordingly. However, there are some rules you must follow:
 
                 1) You will respond using the same jargon and vernacular as the user's prompt.
+                If you do not detect any unordinary vernacular, respond normally.
                 If you detect child-like language, respond in a manner such that a child will understand.
                 If you detect highly technical terminology, respond with highly technical terminology.
                 If you detect Old/Shakespearean English, respond in Old/Shakespearean language.
                 If you detect slang, include similar slang throughout your response.
                 If you detect a casual conversation, respond with casual language.
-                If you do not detect any unordinary vernacular, respond normally.
                 Etc. Whatever style of text you detect, mimic it in your responses.
 
                 2) Your responses must be brief. Keep it to 1-2 paragraphs in length at most.
                 If you could answer the prompt in 1 sentence or a few words, do so. 
-                                """
+                
+                3) You must continue with context of previous messages even if the user's jargon has shifted.
+                If the user's jargon has shifted, you will shift accordingly to match their vernacular.
+                Nonetheless, the most important part is the content and if sacrificing the jargon mimicry is 
+                required to give a sufficient answer to the prompt, do so.
+                """
     }]
+else:
+    messages = history
+
+# ESTABLISHING THAT PAUL HAS BEGUN LISTENING
+os.system("sound.ogg")
+
+
+def main():
     recognizer = speech_recognition.Recognizer()
     while True:
 
         try:
             with speech_recognition.Microphone() as mic:
                 recognizer.adjust_for_ambient_noise(mic, duration=0.2)
-                audio = recognizer.listen(mic)
-                text = recognizer.recognize_google(audio)
+                audio = recognizer.listen(mic)  # PICKS UP AUDIO SOUNDS
+                text = recognizer.recognize_google(audio)  # CONVERTS TO TEXT FOR FUTURE USE
+
                 words = text.split(" ")
                 word_count = len(text.split())
                 """
@@ -55,10 +70,10 @@ def main():
                 This prevents GPT from answering questions when it shouldn't and reduces confusion.
                 """
                 if word_count < 3:
-                    if text == "exit":
+                    if words[0] in ["exit", "quit", "stop", "bye"]:  # COULD BE MORE IF WANTED
                         break
-                elif words[0] == "hey" and words[1] == "Paul":
-                    prompt = text[9:]
+                elif words[1] == "Paul":
+                    prompt = text.split("Paul ", 1)[1]  # ONLY SUBMITS WORDS AFTER 'PAUL' TO ANSWER PROMPT
 
                     print(prompt)
                     messages.append({"role": "user", "content": prompt})
@@ -67,18 +82,24 @@ def main():
                         messages=messages
 
                     )
-
+                    # MESSAGE TO BE INTERPRETED
                     message = completion.choices[0].message.content
-                    # print(message)
-                    myobj = gTTS(text=message, lang="en", slow=False)
-                    myobj.save("response.mp3")
+                    # CONVERTS TO AUDIO
+                    audio_response = gTTS(text=message, lang="en", slow=False)
+                    audio_response.save("response.mp3")
+                    # PLAYS AUDIO
                     os.system("response.mp3")
+                    # RETAINS CONTEXT
                     messages.append({"role": "assistant", "content": message})
 
         except speech_recognition.UnknownValueError:
             recognizer = speech_recognition.Recognizer()
             continue
     os.system("sound.ogg")
+    # SAVES INFORMATION STORED IN CONVERSATIONS FOR FUTURE USE.
+    with open("history.json", "w") as h:
+        json.dump(messages, h, indent=2)
+        h.close()
 
 
 if __name__ == "__main__":
