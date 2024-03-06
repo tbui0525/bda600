@@ -5,18 +5,10 @@
   },
   {
     "role": "user",
-    "content": "what are the biggest landmarks in the US in terms of both size and popularity"
+    "content": "what are the parts of the Rosary"
   },
   {
     "role": "assistant",
-    "content": "In the US, some of the biggest landmarks in terms of size and popularity include the Grand Canyon, Yellowstone National Park, Statue of Liberty, Empire State Building, and the Golden Gate Bridge. These landmarks are not only massive in size but also highly recognized and visited by people from all over the world."
-  },
-  {
-    "role": "user",
-    "content": "answer the same question but for Canada"
-  },
-  {
-    "role": "assistant",
-    "content": "In Canada, some of the biggest landmarks in terms of size and popularity are Banff National Park, CN Tower, Niagara Falls, Parliament Hill in Ottawa, and the Rocky Mountains. These landmarks are significant in size and attract a large number of visitors due to their breathtaking beauty and historical importance."
+    "content": "The Rosary consists of various parts, including the Crucifix, the centerpiece, three beads (Our Father, Hail Mary, and Glory Be), and five sets of ten beads called decades for praying the Hail Mary. Each part has its significance in the prayerful meditation of the Rosary."
   }
 ]
