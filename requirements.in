@@ -5,3 +5,6 @@ pyttsx3
 opencv-python
 openai
 gtts
+whisper
+spotipy
+webbrowser

@@ -152,3 +152,4 @@ static
 
 # Project related ignores (place project related ignores below here)
 OPEN_AI_API_KEY.txt
+SECRETS.json
