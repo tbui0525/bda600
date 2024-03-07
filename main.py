@@ -6,7 +6,7 @@ import speech_recognition
 from gtts import gTTS
 from openai import OpenAI
 from spotify import spotify_search as sps
-
+from picture import picture
 
 # GETTING THE API KEY
 with open("SECRETS.json", "r") as f:  # JSON
@@ -55,7 +55,7 @@ os.system("sound.ogg")
 
 def main():
     recognizer = speech_recognition.Recognizer()
-
+    n = 0
     while True:
 
         try:
@@ -84,31 +84,37 @@ def main():
                         break
                 elif words[1] == "Paul":
                     if words[2] == "play":
-                        prompt = text.split("play",1)[1]
+                        prompt = text.split("play", 1)[1]
                         sps(prompt)
+                    elif words[4] in ["picture", "photo"]:
+                        picture(n)
+                        n += 1
                     else:
+                        # ONLY SUBMITS WORDS AFTER 'PAUL' TO ANSWER PROMPT
                         prompt = text.split("Paul ", 1)[
-                        1
-                        ]  # ONLY SUBMITS WORDS AFTER 'PAUL' TO ANSWER PROMPT
-                        print(prompt[0])
-                        #prompt[0] = prompt[0].upper()
+                            1
+                        ]
+                        # Formatting Prompt to be consistent with Few Shot Prompting
+                        prompt = prompt[0].upper() + prompt[1:]
                         prompt = "<user>: " + prompt + " \n <Paul:>"
-                    # LANGUAGE DETECTION
-                    # detected_lang = language_detector.detect_language(prompt)
-                    # if detected_lang != 'en':
-                    #     prompt = translator.translate(promp, src=detected_lang, dest='en')
+
+                        # LANGUAGE DETECTION
+                        # detected_lang = language_detector.detect_language(prompt)
+                        # if detected_lang != 'en':
+                        #     prompt = translator.translate(promp, src=detected_lang, dest='en')
+
                         messages.append({"role": "user", "content": prompt})
                         completion = client.chat.completions.create(
                             model="gpt-3.5-turbo", messages=messages
                         )
-                    # MESSAGE TO BE INTERPRETED
+                        # MESSAGE TO BE INTERPRETED
                         message = completion.choices[0].message.content
-                    # CONVERTS TO AUDIO
+                        # CONVERTS TO AUDIO
                         audio_response = gTTS(text=message, lang="en", slow=False)
                         audio_response.save("response.mp3")
-                    # PLAYS AUDIO
+                        # PLAYS AUDIO
                         os.system("response.mp3")
-                    # RETAINS CONTEXT
+                        # RETAINS CONTEXT
                         messages.append({"role": "assistant", "content": message})
 
         except speech_recognition.UnknownValueError:

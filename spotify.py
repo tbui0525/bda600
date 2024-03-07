@@ -21,5 +21,3 @@ def spotify_search(prompt):
     song = tracks[0]['external_urls']['spotify']
     webbrowser.open(song)
     return
-
-spotify_search("Story of My Life")
