@@ -22,4 +22,4 @@ def spotify_search(prompt):
     webbrowser.open(song)
     return
 
-
+spotify_search("Story of My Life")

@@ -32,17 +32,12 @@ if len(history) == 0:
                 You will be given a series of questions and tasks and using your vast knowledge,
                 respond accordingly. However, there are some rules you must follow:
 
-                1) You will respond using the same jargon and vernacular as the user's prompt.
-                If you do not detect any unordinary vernacular, respond normally.
-                If you detect child-like language, respond in a manner such that a child will understand.
-                If you detect highly technical terminology, respond with highly technical terminology.
+                1) Your responses must be brief. Answer in 1 sentence if possible. 1-2 paragraphs at most.
+                
+                2) Mimic the linguistic styles of the prompt.
                 If you detect Old/Shakespearean English, respond in Old/Shakespearean language.
                 If you detect slang, include similar slang throughout your response.
-                If you detect a casual conversation, respond with casual language.
-                Etc. Whatever style of text you detect, mimic it in your responses.
-
-                2) Your responses must be brief. Keep it to 1-2 paragraphs in length at most.
-                If you could answer the prompt in 1 sentence or a few words, do so. 
+                If you detect a casual conversation, respond with casual language. Etc.
                 
                 3) You must continue with context of previous messages even if the user's jargon has shifted.
                 If the user's jargon has shifted, you will shift accordingly to match their vernacular.
@@ -95,7 +90,9 @@ def main():
                         prompt = text.split("Paul ", 1)[
                         1
                         ]  # ONLY SUBMITS WORDS AFTER 'PAUL' TO ANSWER PROMPT
-
+                        print(prompt[0])
+                        #prompt[0] = prompt[0].upper()
+                        prompt = "<user>: " + prompt + " \n <Paul:>"
                     # LANGUAGE DETECTION
                     # detected_lang = language_detector.detect_language(prompt)
                     # if detected_lang != 'en':
